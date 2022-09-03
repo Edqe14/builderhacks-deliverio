@@ -1,7 +1,16 @@
+/* eslint-disable import/first */
+import { config } from 'dotenv';
+
+config({
+  path: '.env.local'
+});
+
 import express from 'express';
 import { Server } from 'http';
 import next from 'next';
-import { parse } from 'url';
+import { GameStore } from './lib/game/store';
+import { deleteChannel } from './lib/hop';
+
 
 const app = express();
 const server = new Server(app);
@@ -25,3 +34,10 @@ const main = async () => {
 };
 
 main();
+
+process.on('SIGINT', () => process.emit('beforeExit', 0));
+process.once('beforeExit', async () => {
+  await Promise.all(GameStore.all().map((g) => g.stop()));
+
+  process.exit(0);
+});

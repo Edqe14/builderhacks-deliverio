@@ -1,7 +1,7 @@
 import { ChannelType } from '@onehop/js';
 import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
-import hop from '../hop';
+import hop, { deleteChannel } from '../hop';
 
 export const GAME_TICKS_PER_SECOND = 30;
 export const GAME_TICKS = 1000 / GAME_TICKS_PER_SECOND;
@@ -26,9 +26,9 @@ export interface GameOptions {
 export default class Game extends EventEmitter {
   public readonly id = nanoid(32);
 
-  public readonly host: string;
+  public readonly token = nanoid(8);
 
-  public readonly players: string[] = [];
+  public readonly host: string;
 
   public totalDays = 30;
 
@@ -52,13 +52,13 @@ export default class Game extends EventEmitter {
     maxTime: 0,
     time: 0,
     score: 0,
+    players: [] as string[],
   };
 
-  constructor({ host, players, ...opts }: GameOptions) {
+  constructor({ host, ...opts }: GameOptions) {
     super();
 
     this.host = host;
-    this.players = players ?? [];
 
     this.updateSettings(opts);
   }
@@ -67,12 +67,14 @@ export default class Game extends EventEmitter {
     return this.channel;
   }
 
-  async updateSettings({ dayDurationSeconds, difficulty, enabledDepartments, totalDays, startingBalance }: Omit<GameOptions, 'host' | 'players'>) {
-    this.dayDurationSeconds = dayDurationSeconds ?? 60;
-    this.difficulity = difficulty ?? Difficulty.Easy;
-    this.enabledDepartments = enabledDepartments ?? ['retail', 'wholesale'];
-    this.totalDays = totalDays ?? 30;
-    this.startingBalance = startingBalance ?? 100_000;
+  async updateSettings({ dayDurationSeconds, difficulty, enabledDepartments, totalDays, startingBalance, players }: Omit<GameOptions, 'host'>) {
+    if (dayDurationSeconds !== undefined) this.dayDurationSeconds = dayDurationSeconds ?? 60;
+    if (difficulty !== undefined) this.difficulity = difficulty ?? Difficulty.Easy;
+    if (enabledDepartments !== undefined) this.enabledDepartments = enabledDepartments ?? ['retail', 'wholesale'];
+    if (totalDays !== undefined) this.totalDays = totalDays ?? 30;
+    if (startingBalance !== undefined) this.startingBalance = startingBalance ?? 100_000;
+
+    if (players) this.state.players = players ?? [];
 
     this.state.maxTime = this.dayDurationSeconds * this.totalDays * 1000;
 
@@ -128,6 +130,7 @@ export default class Game extends EventEmitter {
 
     this.state.completed = true;
     this.emit('stop');
+    await deleteChannel(this.id);
   }
 
   async update() {
@@ -135,6 +138,7 @@ export default class Game extends EventEmitter {
   }
 
   async postUpdate() {
-    (await this.getChannel()).patchState(this.state);
+    const channel = await this.getChannel();
+    await channel.setState(this.state);
   }
 }
