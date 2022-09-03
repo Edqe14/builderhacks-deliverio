@@ -1,8 +1,9 @@
 import Layout from '@/components/Layout';
+import Tabs from '@/components/Tabs/Tabs';
 
 const Home = () => (
   <Layout>
-    <h1>hi</h1>
+    <Tabs />
   </Layout>
 );
 

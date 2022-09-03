@@ -28,12 +28,13 @@
     "import/no-unresolved": "off",
     "object-curly-spacing": "error",
     "class-methods-use-this": "off",
-    "linebreak-style": ["error", "unix"],
+    // "linebreak-style": ["error", "unix"],
     "@typescript-eslint/semi": ["error"],
     "@typescript-eslint/indent": ["error", 2],
     "@typescript-eslint/no-shadow": ["error"],
     "@typescript-eslint/quotes": ["error", "single"],
     "@typescript-eslint/member-delimiter-style": "error",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "linebreak-style": "off"
   }
 }
