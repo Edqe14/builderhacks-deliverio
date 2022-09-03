@@ -98,7 +98,7 @@ export default class Game extends EventEmitter {
 
     if (players) {
       this.state.players = players ?? [];
-      await (await this.document).update({ players: this.state.players });
+      await this.document.update({ players: this.state.players });
     }
 
     this.state.maxTime = this.dayDurationSeconds * this.totalDays * 1000;
@@ -111,15 +111,11 @@ export default class Game extends EventEmitter {
       if (this.state.completed || !this.state.started) return;
       if (this.state.paused) return this.registerTimeout();
 
-      console.time('start');
-
       this.state.time += GAME_TICKS;
       this.emit('update', this.state.time);
 
       await this.update();
       await this.postUpdate();
-
-      console.timeEnd('start');
 
       if (this.state.time >= this.state.maxTime) return this.stop();
 
@@ -168,6 +164,6 @@ export default class Game extends EventEmitter {
 
   async postUpdate() {
     const channel = await this.getChannel();
-    await channel.setState(this.state);
+    channel.setState(this.state);
   }
 }
