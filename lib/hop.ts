@@ -9,6 +9,4 @@ export const hopRaw = axios.create({
   }
 });
 
-export const deleteChannel = (id: string) => axios.delete(`/channels/${id}`);
-
 export default hop;

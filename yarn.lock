@@ -356,10 +356,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@onehop/js@1.3.19":
-  version "1.3.19"
-  resolved "https://registry.yarnpkg.com/@onehop/js/-/js-1.3.19.tgz#0123eb17f0c8d9106ed0c3f3f4a6f729d09fa763"
-  integrity sha512-Dw15BVJjo1Jss0XpUSgYLxYwB1UORYctz4Wd/I189s38PEkqUKrIwvugUdFX7qbUMdIKPr86D02erQ66oIGvgw==
+"@onehop/js@1.3.20":
+  version "1.3.20"
+  resolved "https://registry.yarnpkg.com/@onehop/js/-/js-1.3.20.tgz#0ed55cdf071aaf682d3ea938fb7b6f694adb37f0"
+  integrity sha512-ZQg4apPGuuo1FU0m2L6i/uu/tR/o7+Pw+ZUvbpMvxQkAsetCh2uz4Way6EWxbgENRZFU/WS4r4fO1sWCgUmcFQ==
   dependencies:
     "@onehop/json-methods" "^1.1.2"
     cross-fetch "^3.1.5"

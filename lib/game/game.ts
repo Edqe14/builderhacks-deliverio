@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
 import gameStream from '../database';
 import GameModel from '../database/models/game';
-import hop, { deleteChannel } from '../hop';
+import hop from '../hop';
 
 export const GAME_TICKS_PER_SECOND = 30;
 export const GAME_TICKS = 1000 / GAME_TICKS_PER_SECOND;
@@ -153,7 +153,7 @@ export default class Game extends EventEmitter {
     this.emit('stop');
 
     await Promise.all([
-      deleteChannel(this.id),
+      hop.channels.delete(this.id),
       this.document.delete()
     ]);
   }
