@@ -4,10 +4,19 @@ import { GetServerSideProps } from 'next';
 import hop from '@/lib/hop';
 import GameModel from '@/lib/database/models/game';
 
-export default function Game() {
+interface Props {
+  gameFull?: boolean;
+  token?: string;
+  id?: string;
+}
+
+export default function Game({ gameFull, token, id }: Props) {
   return (
     <div>
       <h1>Game</h1>
+      <p>{token}</p>
+      <p>{id}</p>
+      <p>{gameFull ?? false}</p>
     </div>
   );
 }
