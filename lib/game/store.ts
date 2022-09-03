@@ -1,7 +1,10 @@
-import Game from './game';
+import EventEmitter from 'events';
+import Game, { GameOptions } from './game';
 
 export class GameStore {
   public static instance: Map<string, Game> | null = null;
+
+  public static emitter = new EventEmitter();
 
   // eslint-disable-next-line no-useless-constructor, @typescript-eslint/no-empty-function
   private constructor() {}
@@ -14,9 +17,15 @@ export class GameStore {
     return this.instance;
   }
 
-  public static create() {
-    const game = new Game();
+  public static all() {
+    return [...this.getInstance().values()];
+  }
+
+  public static create(opts: GameOptions) {
+    const game = new Game(opts);
+
     this.getInstance().set(game.id, game);
+    this.emitter.emit('create', game);
 
     return game;
   }

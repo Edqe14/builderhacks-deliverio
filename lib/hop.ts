@@ -1,5 +1,5 @@
-import { Hop } from '@onehop/js';
+import { APIAuthentication, Hop } from '@onehop/js';
 
-const hop = new Hop(`ptk_${process.env.HOP_TOKEN}`);
+const hop = new Hop(process.env.HOP_TOKEN as APIAuthentication);
 
 export default hop;
