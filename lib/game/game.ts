@@ -48,6 +48,8 @@ export default class Game extends EventEmitter {
 
   public document = new GameModel({ id: this.id, token: this.token });
 
+  public queue = [];
+
   public dayStats = {
     netProfit: [],
     utilization: []
