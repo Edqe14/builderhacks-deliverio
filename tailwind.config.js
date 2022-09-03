@@ -4,7 +4,12 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        kanit: ['Kanit', 'sans-serif'],
+        fredokaOne: ['"Fredoka One"', 'sans-serif']
+      }
+    },
   },
   plugins: [],
 };

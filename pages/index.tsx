@@ -1,5 +1,9 @@
+import Layout from '@/components/Layout';
+
 const Home = () => (
-  <h1 className="text-lg">Hello World!</h1>
+  <Layout>
+    <h1>hi</h1>
+  </Layout>
 );
 
 export default Home;
