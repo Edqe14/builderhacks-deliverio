@@ -48,8 +48,14 @@ export default class Game extends EventEmitter {
 
   public document = new GameModel({ id: this.id, token: this.token });
 
+  public dayStats = {
+    netProfit: [],
+    utilization: []
+  };
+
   public state = {
     balance: this.startingBalance,
+    dayEnd: false,
     started: false,
     paused: false,
     completed: false,
@@ -57,6 +63,22 @@ export default class Game extends EventEmitter {
     time: 0,
     score: 0,
     players: [] as string[],
+
+    warehouses: {
+      available: [],
+      active: []
+    },
+    departments: {
+      retail: {
+        available: [],
+        active: []
+      },
+      wholesale: {
+        available: [],
+        active: []
+      }
+    },
+    supplies: []
   };
 
   constructor({ host, ...opts }: GameOptions) {
@@ -87,6 +109,12 @@ export default class Game extends EventEmitter {
         await (await this.getChannel()).patchState(this.state);
       }
     });
+  }
+
+  async mergeState(state: Partial<typeof this.state>) {
+    this.state = { ...this.state, ...state };
+
+    await (await this.getChannel()).patchState(this.state);
   }
 
   async updateSettings({ dayDurationSeconds, difficulty, enabledDepartments, totalDays, startingBalance, players }: Omit<GameOptions, 'host'>) {
@@ -152,14 +180,26 @@ export default class Game extends EventEmitter {
     this.state.completed = true;
     this.emit('stop');
 
-    await Promise.all([
-      hop.channels.delete(this.id),
-      this.document.delete()
-    ]);
+    setTimeout(async () => {
+      await Promise.all([
+        hop.channels.delete(this.id),
+        this.document.delete()
+      ]);
+    }, 5 * 60 * 1000);
   }
 
   async update() {
-    // console.log(`${this.id} | time: ${this.state.time} | max: ${this.state.maxTime}`);
+    if (Math.floor(this.state.time / 1000) % this.dayDurationSeconds === 0 && !this.state.dayEnd) {
+      this.mergeState({ dayEnd: true });
+
+      console.log('day');
+    }
+
+    if (Math.floor(this.state.time / 1000) % this.dayDurationSeconds !== 0 && this.state.dayEnd) {
+      this.mergeState({ dayEnd: false });
+    }
+
+    console.log(`${this.id} | time: ${this.state.time} | max: ${this.state.maxTime}`);
   }
 
   async postUpdate() {
