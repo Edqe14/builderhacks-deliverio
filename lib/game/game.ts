@@ -1,6 +1,8 @@
 import { ChannelType } from '@onehop/js';
 import EventEmitter from 'events';
 import { nanoid } from 'nanoid';
+import gameStream from '../database';
+import GameModel from '../database/models/game';
 import hop, { deleteChannel } from '../hop';
 
 export const GAME_TICKS_PER_SECOND = 30;
@@ -44,6 +46,8 @@ export default class Game extends EventEmitter {
 
   public readonly channel = hop.channels.create(ChannelType.PRIVATE, this.id);
 
+  public document = new GameModel({ id: this.id, token: this.token });
+
   public state = {
     balance: this.startingBalance,
     started: false,
@@ -60,11 +64,29 @@ export default class Game extends EventEmitter {
 
     this.host = host;
 
+    this.init();
     this.updateSettings(opts);
   }
 
   getChannel() {
     return this.channel;
+  }
+
+  async init() {
+    await this.document.save();
+
+    gameStream.on('change', async (ev) => {
+      if (ev.operationType !== 'modify') return;
+
+      const current = await GameModel.findOne({ id: this.id });
+      if (!current) return;
+
+      this.document = current;
+      if (this.state.players.join('-') !== current.players.join('-')) {
+        this.state.players = current.players;
+        await (await this.getChannel()).patchState(this.state);
+      }
+    });
   }
 
   async updateSettings({ dayDurationSeconds, difficulty, enabledDepartments, totalDays, startingBalance, players }: Omit<GameOptions, 'host'>) {
@@ -74,7 +96,10 @@ export default class Game extends EventEmitter {
     if (totalDays !== undefined) this.totalDays = totalDays ?? 30;
     if (startingBalance !== undefined) this.startingBalance = startingBalance ?? 100_000;
 
-    if (players) this.state.players = players ?? [];
+    if (players) {
+      this.state.players = players ?? [];
+      await (await this.document).update({ players: this.state.players });
+    }
 
     this.state.maxTime = this.dayDurationSeconds * this.totalDays * 1000;
 
@@ -130,7 +155,11 @@ export default class Game extends EventEmitter {
 
     this.state.completed = true;
     this.emit('stop');
-    await deleteChannel(this.id);
+
+    await Promise.all([
+      deleteChannel(this.id),
+      this.document.delete()
+    ]);
   }
 
   async update() {

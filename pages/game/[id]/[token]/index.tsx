@@ -2,7 +2,7 @@ import { serialize } from 'cookie';
 import { nanoid } from 'nanoid';
 import { GetServerSideProps } from 'next';
 import hop from '@/lib/hop';
-import { GameStore } from '@/lib/game/store';
+import GameModel from '@/lib/database/models/game';
 
 export default function Game() {
   return (
@@ -28,14 +28,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const { uid } = req.cookies;
 
-  const game = GameStore.get(ctx.query.id as string);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const game = await GameModel.findOne({ id: ctx.params!.id });
   if (!game || game.token !== ctx.query.token) {
     return {
       notFound: true
     };
   }
 
-  if (game.state.players.length + 1 >= 4) {
+  if (game.players.length + 1 >= 4) {
     return {
       props: {
         gameFull: true
@@ -43,14 +44,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  await game.updateSettings({
-    players: [...game.state.players, uid]
+  game.update({
+    $push: {
+      players: uid
+    }
   });
 
-  const channel = await game.getChannel();
-  const { id } = await hop.channels.tokens.create(channel.state);
+  const { id } = await hop.channels.tokens.create();
 
-  await channel.subscribeToken(id);
+  await hop.channels.subscribeToken(game.id, id);
 
   return {
     props: {
