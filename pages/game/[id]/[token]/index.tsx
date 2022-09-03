@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  if (game.players.length + 1 >= 4) {
+  if (game.players.length + 1 >= 4 && !game.players.includes(uid)) {
     return {
       props: {
         gameFull: true
@@ -44,11 +44,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  game.update({
-    $push: {
-      players: uid
-    }
-  });
+  if (!game.players.includes(uid)) {
+    game.players.push(uid);
+    game.markModified('players');
+    await game.save();
+  }
 
   const { id } = await hop.channels.tokens.create();
 
