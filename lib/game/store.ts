@@ -21,6 +21,10 @@ export class GameStore {
     return [...this.getInstance().values()];
   }
 
+  public static get(id: string) {
+    return this.getInstance().get(id);
+  }
+
   public static create(opts: GameOptions) {
     const game = new Game(opts);
 
