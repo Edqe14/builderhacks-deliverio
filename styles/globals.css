@@ -7,3 +7,7 @@
 body {
   @apply font-kanit bg-slate-50;
 }
+
+.map-container {
+  height: 400px;
+}

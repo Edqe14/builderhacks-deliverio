@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { Tab } from '@headlessui/react';
 
-import OverviewTab from './OverviewTab';
+import OverviewTab from './OverviewTab.jsx';
 import SuppliesTab from './SuppliesTab';
 import RetailTab from './RetailTab';
 import WholesaleTab from './WholesaleTab';
