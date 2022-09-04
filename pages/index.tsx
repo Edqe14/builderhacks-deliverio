@@ -3,7 +3,10 @@ import Tabs from '@/components/Tabs/Tabs';
 
 const Home = () => (
   <Layout>
-    <Tabs />
+    <div className="grid grid-cols-2 gap-4">
+      <Tabs />
+      <>maps</>
+    </div>
   </Layout>
 );
 
