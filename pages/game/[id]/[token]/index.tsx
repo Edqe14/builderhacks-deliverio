@@ -6,15 +6,15 @@ import GameModel from '@/lib/database/models/game';
 
 interface Props {
   gameFull?: boolean;
-  token?: string;
+  channelToken?: string;
   id?: string;
 }
 
-export default function Game({ gameFull, token, id }: Props) {
+export default function Game({ gameFull, channelToken, id }: Props) {
   return (
     <div>
       <h1>Game</h1>
-      <p>{token}</p>
+      <p>{channelToken}</p>
       <p>{id}</p>
       <p>{gameFull ?? false}</p>
     </div>
@@ -65,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      token: id,
+      channelToken: id,
       id: game.id
     }
   };

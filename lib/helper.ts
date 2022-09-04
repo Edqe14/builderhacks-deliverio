@@ -3,6 +3,9 @@
 import { NextApiResponse } from 'next';
 import { AnySchema } from 'yup';
 
+export const clamp = (value: number, min: number, max = Infinity) => Math.min(Math.max(value, min), max);
+export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
+
 export const runValidator = async (res: NextApiResponse, validator: AnySchema, body: any) => {
   try {
     await validator.validate(body);

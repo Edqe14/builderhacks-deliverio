@@ -11,7 +11,7 @@ export default class Base<T> {
 
   public readonly game: Game;
 
-  public readonly data: T;
+  public data: T;
 
   constructor(game: Game, data: T) {
     this.game = game;
