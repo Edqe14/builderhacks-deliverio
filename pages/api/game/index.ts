@@ -22,5 +22,5 @@ export default connector()
       ...rest
     });
 
-    return res.json(prepareData({ data: game }));
+    return res.json(prepareData({ data: { id: game.id, token: game.token, host: game.host } }));
   });

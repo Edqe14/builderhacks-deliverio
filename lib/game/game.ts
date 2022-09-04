@@ -8,7 +8,7 @@ import Retail from './departments/retail';
 import Wholesale from './departments/wholesale';
 import Item from './common/item';
 import Supplier, { SupplierRequest } from './departments/supplier';
-import { clamp, random } from '../helper';
+import { clamp, prepareData, random } from '../helper';
 import Warehouse from './departments/warehouse';
 
 export const GAME_TICKS_PER_SECOND = 24;
@@ -141,7 +141,7 @@ export default class Game extends EventEmitter {
       this.document = current;
       if (this.state.players.join('-') !== current.players.join('-')) {
         this.state.players = current.players;
-        await (await this.getChannel()).patchState(this.state);
+        await this.updateChannelState();
       }
     };
 
@@ -152,7 +152,7 @@ export default class Game extends EventEmitter {
   }
 
   async updateChannelState(actuallyWait = false) {
-    const res = (await this.getChannel()).patchState(this.state);
+    const res = (await this.getChannel()).patchState(prepareData(this.state));
     if (actuallyWait) await res;
   }
 
@@ -176,7 +176,7 @@ export default class Game extends EventEmitter {
 
     this.state.maxTime = this.dayDurationSeconds * this.totalDays * 1000;
 
-    await (await this.getChannel()).patchState(this.state);
+    await this.updateChannelState();
   }
 
   registerTimeout() {

@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
 import Game from '../game';
 
@@ -16,5 +17,9 @@ export default class Base<T> {
   constructor(game: Game, data: T) {
     this.game = game;
     this.data = data;
+  }
+
+  toJSON() {
+    return omit(this, ['game']);
   }
 }

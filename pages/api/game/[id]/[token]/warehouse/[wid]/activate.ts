@@ -17,8 +17,14 @@ export default connector()
       return;
     }
 
-    const splice = game.state.warehouses.available.splice(index, 1);
-    game.state.warehouses.active.push(...splice);
+    const [warehouse] = game.state.warehouses.available.splice(index, 1);
+    if (game.state.balance < warehouse.pricePerWeek) {
+      res.status(403).json({ message: 'Not enough balance' });
+      return;
+    }
+
+    game.state.balance -= warehouse.pricePerWeek;
+    game.state.warehouses.active.push(warehouse);
 
     res.status(200).json({ message: 'Activated' });
   });

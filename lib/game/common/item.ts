@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { nanoid } from 'nanoid';
 import Game from '../game';
 
@@ -19,5 +20,9 @@ export default class Item {
     this.name = name;
     this.image = image;
     this.basePrice += game.difficulity;
+  }
+
+  toJSON() {
+    return omit(this, ['game']);
   }
 }

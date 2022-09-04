@@ -1,8 +1,12 @@
 import { serialize } from 'cookie';
 import { nanoid } from 'nanoid';
 import { GetServerSideProps } from 'next';
-import hop from '@/lib/hop';
+import { useEffect } from 'react';
+import { hop } from '@onehop/client';
+import { useReadChannelState } from '@onehop/react';
+import hopServer from '@/lib/hop';
 import GameModel from '@/lib/database/models/game';
+import Game from '@/lib/game/game';
 
 interface Props {
   gameFull?: boolean;
@@ -10,13 +14,33 @@ interface Props {
   id?: string;
 }
 
-export default function Game({ gameFull, channelToken, id }: Props) {
+export default function GameView({ gameFull, channelToken, id }: Props) {
+  const { state } = useReadChannelState<Game['state']>(id as string);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    hop.init({
+      projectId: process.env.NEXT_PUBLIC_HOP_PROJECT_ID as string, // replace with your project ID
+      token: channelToken,
+    });
+  }, []);
+
   return (
     <div>
       <h1>Game</h1>
       <p>{channelToken}</p>
       <p>{id}</p>
       <p>{gameFull ?? false}</p>
+      <br />
+      <p>{state?.balance}</p>
+      <p>{Math.floor((state?.time ?? 0) / 1000)}</p>
+      <br />
+      <p>{JSON.stringify(state?.warehouses)}</p>
+      <br />
+      <p>{JSON.stringify(state?.supplies)}</p>
     </div>
   );
 }
@@ -59,9 +83,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     await game.save();
   }
 
-  const { id } = await hop.channels.tokens.create();
+  const { id } = await hopServer.channels.tokens.create();
 
-  await hop.channels.subscribeToken(game.id, id);
+  await hopServer.channels.subscribeToken(game.id, id);
 
   return {
     props: {
