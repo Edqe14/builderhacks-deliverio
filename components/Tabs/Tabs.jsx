@@ -24,6 +24,9 @@ export default function Tabs() {
 
   return (
     <div className="">
+      <p className="cursor-pointer text-3xl font-medium text-slate-600 mt-10 mb-10 ml-3">
+        Overview of the game
+      </p>
       <Tab.Group>
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
           {Object.keys(categories).map((category) => (

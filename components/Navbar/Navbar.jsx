@@ -103,11 +103,18 @@ export default function Navbar() {
     <Popover className="relative bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex items-center justify-between border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
-          <div className="flex justify-start lg:w-0 lg:flex-1">
+          <div className="flex justify-between gap-2 lg:w-0 lg:flex-1">
             <a href="#" className="cursor-pointer">
               <span className="sr-only">Your Company</span>
               <p className="cursor-pointer text-3xl font-medium text-red-600">
                 Deliverio
+              </p>
+            </a>
+
+            <a href="/game/new" className="cursor-pointer">
+              <span className="sr-only">Your Company</span>
+              <p className="cursor-pointer text-lg font-medium text-indigo-600">
+                Start Game!
               </p>
             </a>
           </div>
