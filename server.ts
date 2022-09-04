@@ -5,6 +5,7 @@ config({
   path: '.env.local'
 });
 
+import './lib/database';
 import express from 'express';
 import { Server } from 'http';
 import next from 'next';
