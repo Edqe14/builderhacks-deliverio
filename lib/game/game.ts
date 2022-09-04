@@ -394,8 +394,6 @@ export default class Game extends EventEmitter {
 
     // force update
     this.updateChannelState();
-
-    console.log(`${this.id} | time: ${this.state.time} | max: ${this.state.maxTime}`);
   }
 
   async postUpdate() {
