@@ -60,6 +60,7 @@ export default class Game extends EventEmitter {
   public document = new GameModel({ id: this.id, token: this.token });
 
   public state = {
+    host: '',
     balance: this.startingBalance,
     dayEnd: false,
     started: false,
@@ -112,6 +113,7 @@ export default class Game extends EventEmitter {
     super();
 
     this.host = host;
+    this.state.host = host;
 
     this.init();
     this.updateSettings(opts);
