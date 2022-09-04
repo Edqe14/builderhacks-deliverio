@@ -1,11 +1,11 @@
-import { APIAuthentication, Hop } from '@onehop/js';
+import { Hop } from '@onehop/js';
 import axios from 'axios';
 
-const hop = new Hop(process.env.HOP_TOKEN as APIAuthentication);
+const hop = new Hop('ptk_c19iYjUxZGIzNDVjZTM4NzNmNDM2NDJiZjI1OWE4MDM4OF81MDQ1NjYyOTA4MjQ3NjY0Mw');
 export const hopRaw = axios.create({
   baseURL: 'https://api.hop.io/v1',
   headers: {
-    Authorization: process.env.HOP_TOKEN as string,
+    Authorization: 'ptk_c19iYjUxZGIzNDVjZTM4NzNmNDM2NDJiZjI1OWE4MDM4OF81MDQ1NjYyOTA4MjQ3NjY0Mw',
   }
 });
 

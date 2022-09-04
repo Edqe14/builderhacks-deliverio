@@ -23,7 +23,7 @@ export default function GameView({ gameFull, channelToken, id }: Props) {
     }
 
     hop.init({
-      projectId: process.env.NEXT_PUBLIC_HOP_PROJECT_ID as string, // replace with your project ID
+      projectId: 'project_NTAyMzA3OTQ1MzY0MDcwNjM',
       token: channelToken,
     });
   }, []);
